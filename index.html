@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz: Abstração e Lógica | TDS</title>
+    <title>Challenge: Missão Lógica TDS</title>
     <style>
         :root {
-            --bg: #0f172a;
-            --card: #1e293b;
-            --text: #f8fafc;
-            --accent: #38bdf8;
-            --success: #22c55e;
+            --bg: #0d1117;
+            --card: #161b22;
+            --text: #c9d1d9;
+            --accent: #58a6ff;
+            --success: #238636;
+            --border: #30363d;
         }
         body {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Inter', -apple-system, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             display: flex;
@@ -24,93 +25,99 @@
         }
         #quiz-container {
             background-color: var(--card);
-            padding: 2.5rem;
-            border-radius: 1rem;
+            padding: 2rem;
+            border-radius: 12px;
             width: 90%;
-            max-width: 550px;
-            text-align: center;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
         }
         .hidden { display: none; }
+        h2 { color: var(--accent); text-align: center; }
         input {
             width: 100%;
             padding: 12px;
             margin: 20px 0;
             border-radius: 6px;
-            border: 1px solid var(--accent);
-            background: #0f172a;
+            border: 1px solid var(--border);
+            background: #0d1117;
             color: white;
             box-sizing: border-box;
+            outline: none;
         }
+        input:focus { border-color: var(--accent); }
         button {
-            background-color: var(--accent);
-            color: #0f172a;
+            background-color: var(--success);
+            color: white;
             border: none;
-            padding: 12px 24px;
+            padding: 14px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
             width: 100%;
             font-size: 1rem;
+            transition: 0.3s;
         }
+        button:hover { filter: brightness(1.2); }
         .option {
-            background: #334155;
+            background: #21262d;
             padding: 15px;
             margin: 10px 0;
             border-radius: 8px;
             cursor: pointer;
-            transition: transform 0.1s;
-            text-align: left;
+            border: 1px solid var(--border);
+            transition: 0.2s;
         }
-        .option:hover { background: #475569; transform: scale(1.02); }
-        .progress { color: var(--accent); margin-bottom: 20px; font-weight: bold; }
-        #loader { margin-top: 10px; font-style: italic; color: var(--accent); }
+        .option:hover { border-color: var(--accent); background: #30363d; }
+        .progress { color: #8b949e; text-align: center; font-size: 0.9rem; margin-bottom: 15px; }
+        #status-msg { margin-top: 15px; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div id="quiz-container">
     <div id="start-screen">
-        <h2 style="color: var(--accent)">Avaliação de Lógica</h2>
-        <p>Baseado nos pilares de Decomposição e Abstração.</p>
-        <input type="text" id="student-name" placeholder="Digite seu nome completo">
-        <button onclick="startQuiz()">INICIAR QUIZ</button>
+        <h2>🚀 Missão: Pensamento Computacional</h2>
+        <p style="text-align: center;">Bora testar se sua lógica está compilando sem erros!</p>
+        <input type="text" id="student-name" placeholder="Como te chamam no GitHub? (Nome Completo)">
+        <button onclick="startQuiz()">DAR O START</button>
     </div>
 
     <div id="question-screen" class="hidden">
         <div class="progress" id="progress-text"></div>
-        <h3 id="question-text"></h3>
+        <h3 id="question-text" style="line-height: 1.4;"></h3>
         <div id="options-container"></div>
     </div>
 
     <div id="result-screen" class="hidden">
-        <h2 style="color: var(--success)">Treinamento Finalizado!</h2>
-        <p id="score-text"></p>
-        <p id="status-msg">Enviando seus resultados para o professor...</p>
-        <div id="loader" class="hidden">Processando...</div>
-        <button onclick="location.reload()" style="margin-top:20px; background:#64748b; color:white">VOLTAR AO INÍCIO</button>
+        <h2 id="final-title">Relatório Final</h2>
+        <p id="score-text" style="font-size: 1.2rem; text-align: center;"></p>
+        <p id="status-msg" style="text-align: center;">Enviando logs para o servidor do professor...</p>
+        <button onclick="location.reload()" style="background:#30363d;">RECOMEÇAR SPRINT</button>
     </div>
 </div>
 
 <script>
     const FORMSPREE_URL = "https://formspree.io/f/xaqdeyrj";
     
-    // Questões baseadas no seu NotebookLM (Abstração, Booleana, Fluxogramas)
     const questions = [
-        { q: "Qual pilar consiste em dividir um problema grande em partes menores?", o: ["Abstração", "Decomposição", "Algoritmo", "Reconhecimento de Padrões"], a: 1 },
-        { q: "Resultado lógico de: (V AND F) OR (NOT F)?", o: ["Falso", "Verdadeiro", "Erro", "Nulo"], a: 1 },
-        { q: "No fluxograma, qual forma representa uma decisão (IF)?", o: ["Retângulo", "Círculo", "Losango", "Oval"], a: 2 },
-        { q: "A Abstração serve para focar no que é essencial e ignorar detalhes?", o: ["Sim, correto", "Não, a abstração foca nos detalhes", "Serve apenas para design", "Serve para compilar código"], a: 0 },
-        { q: "Pseudocódigo é uma linguagem de programação oficial?", o: ["Sim, como Python", "Não, é uma ponte lógica em linguagem humana", "Sim, usada em Backend", "É o mesmo que Binário"], a: 1 }
+        { q: "O que é 'Decomposição' na vida real de um dev?", o: ["Copiar o código do colega", "Dividir um problemão em probleminhas menores", "Deletar o banco de dados sem querer", "Escrever tudo num arquivo só"], a: 1 },
+        { q: "Lógica pura: (V AND F) OR (NOT F). Qual o resultado?", o: ["Falso", "Verdadeiro", "Null", "Undefined"], a: 1 },
+        { q: "Vai usar um IF no fluxograma? Qual forma você desenha?", o: ["Um círculo", "Um retângulo", "Um losango (aquele diamante)", "Uma seta"], a: 2 },
+        { q: "Pra que serve a 'Abstração'?", o: ["Pra complicar o código", "Pra focar só no que importa e ignorar o resto", "Pra decorar comandos", "Pra fazer o design da página"], a: 1 },
+        { q: "Pseudocódigo é o quê?", o: ["Uma linguagem que só o PC entende", "Uma forma de escrever a lógica em 'português' antes de codar", "Um vírus disfarçado", "O código final em Java"], a: 1 },
+        { q: "Se A=F e B=V, qual o valor de (NOT A) AND B?", o: ["Verdadeiro", "Falso", "Erro de sistema", "Depende do processador"], a: 0 },
+        { q: "Frontend vs Backend. Onde fica a interface que o usuário vê?", o: ["No Backend", "No Frontend", "No Banco de Dados", "No cabo de rede"], a: 1 },
+        { q: "Qual a regra de ouro do seu guia?", o: ["Digitar rápido é o que importa", "Programar é pensar, não digitar", "Código sem comentário é melhor", "Planejar é perda de tempo"], a: 1 },
+        { q: "No fluxograma, o que o 'Retângulo' representa?", o: ["O início do programa", "Uma tomada de decisão", "Um processo ou ação", "O fim do programa"], a: 2 },
+        { q: "Inverter um valor Falso com o operador NOT resulta em?", o: ["Continua Falso", "Vira Nulo", "Vira Verdadeiro", "Dá tela azul"], a: 2 }
     ];
 
-    let current = 0;
-    let score = 0;
-    let studentName = "";
+    let current = 0, score = 0, studentName = "";
 
     function startQuiz() {
         studentName = document.getElementById('student-name').value;
-        if (studentName.length < 3) return alert("Por favor, digite seu nome!");
+        if (studentName.trim().length < 3) return alert("Ei, coloca seu nome aí!");
         document.getElementById('start-screen').classList.add('hidden');
         document.getElementById('question-screen').classList.remove('hidden');
         showQuestion();
@@ -118,7 +125,7 @@
 
     function showQuestion() {
         const q = questions[current];
-        document.getElementById('progress-text').innerText = `PERGUNTA ${current + 1} DE ${questions.length}`;
+        document.getElementById('progress-text').innerText = `STEP ${current + 1} / ${questions.length}`;
         document.getElementById('question-text').innerText = q.q;
         const container = document.getElementById('options-container');
         container.innerHTML = "";
@@ -140,31 +147,24 @@
     async function sendResults() {
         document.getElementById('question-screen').classList.add('hidden');
         document.getElementById('result-screen').classList.remove('hidden');
+        
+        let msgFinal = score >= 7 ? "Mandou bem, Dev! 🚀" : "Quase lá! Bora refatorar esse estudo? 💻";
+        document.getElementById('final-title').innerText = msgFinal;
         document.getElementById('score-text').innerText = `${studentName}, você acertou ${score} de ${questions.length}!`;
-        document.getElementById('loader').classList.remove('hidden');
 
-        // Envio para o Formspree
         try {
-            const response = await fetch(FORMSPREE_URL, {
+            await fetch(FORMSPREE_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     aluno: studentName,
-                    acertos: score,
-                    total: questions.length,
-                    data: new Date().toLocaleString()
+                    score: `${score}/${questions.length}`,
+                    feedback: score >= 7 ? "Hacker" : "Estagiário"
                 })
             });
-
-            if (response.ok) {
-                document.getElementById('status-msg').innerText = "✅ Resultados enviados com sucesso!";
-            } else {
-                throw new Error();
-            }
+            document.getElementById('status-msg').innerText = "✅ Logs enviados! Pode fechar a aba.";
         } catch (err) {
-            document.getElementById('status-msg').innerText = "❌ Erro ao enviar. Avise o professor!";
-        } finally {
-            document.getElementById('loader').classList.add('hidden');
+            document.getElementById('status-msg').innerText = "❌ Erro de conexão com o servidor do prof!";
         }
     }
 </script>
