@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: Abstração e Lógica | TDS</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f8fafc;
+            --accent: #38bdf8;
+            --success: #22c55e;
+        }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        #quiz-container {
+            background-color: var(--card);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 550px;
+            text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+        .hidden { display: none; }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 20px 0;
+            border-radius: 6px;
+            border: 1px solid var(--accent);
+            background: #0f172a;
+            color: white;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: var(--accent);
+            color: #0f172a;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            font-size: 1rem;
+        }
+        .option {
+            background: #334155;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.1s;
+            text-align: left;
+        }
+        .option:hover { background: #475569; transform: scale(1.02); }
+        .progress { color: var(--accent); margin-bottom: 20px; font-weight: bold; }
+        #loader { margin-top: 10px; font-style: italic; color: var(--accent); }
+    </style>
+</head>
+<body>
+
+<div id="quiz-container">
+    <div id="start-screen">
+        <h2 style="color: var(--accent)">Avaliação de Lógica</h2>
+        <p>Baseado nos pilares de Decomposição e Abstração.</p>
+        <input type="text" id="student-name" placeholder="Digite seu nome completo">
+        <button onclick="startQuiz()">INICIAR QUIZ</button>
+    </div>
+
+    <div id="question-screen" class="hidden">
+        <div class="progress" id="progress-text"></div>
+        <h3 id="question-text"></h3>
+        <div id="options-container"></div>
+    </div>
+
+    <div id="result-screen" class="hidden">
+        <h2 style="color: var(--success)">Treinamento Finalizado!</h2>
+        <p id="score-text"></p>
+        <p id="status-msg">Enviando seus resultados para o professor...</p>
+        <div id="loader" class="hidden">Processando...</div>
+        <button onclick="location.reload()" style="margin-top:20px; background:#64748b; color:white">VOLTAR AO INÍCIO</button>
+    </div>
+</div>
+
+<script>
+    const FORMSPREE_URL = "https://formspree.io/f/xaqdeyrj";
+    
+    // Questões baseadas no seu NotebookLM (Abstração, Booleana, Fluxogramas)
+    const questions = [
+        { q: "Qual pilar consiste em dividir um problema grande em partes menores?", o: ["Abstração", "Decomposição", "Algoritmo", "Reconhecimento de Padrões"], a: 1 },
+        { q: "Resultado lógico de: (V AND F) OR (NOT F)?", o: ["Falso", "Verdadeiro", "Erro", "Nulo"], a: 1 },
+        { q: "No fluxograma, qual forma representa uma decisão (IF)?", o: ["Retângulo", "Círculo", "Losango", "Oval"], a: 2 },
+        { q: "A Abstração serve para focar no que é essencial e ignorar detalhes?", o: ["Sim, correto", "Não, a abstração foca nos detalhes", "Serve apenas para design", "Serve para compilar código"], a: 0 },
+        { q: "Pseudocódigo é uma linguagem de programação oficial?", o: ["Sim, como Python", "Não, é uma ponte lógica em linguagem humana", "Sim, usada em Backend", "É o mesmo que Binário"], a: 1 }
+    ];
+
+    let current = 0;
+    let score = 0;
+    let studentName = "";
+
+    function startQuiz() {
+        studentName = document.getElementById('student-name').value;
+        if (studentName.length < 3) return alert("Por favor, digite seu nome!");
+        document.getElementById('start-screen').classList.add('hidden');
+        document.getElementById('question-screen').classList.remove('hidden');
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const q = questions[current];
+        document.getElementById('progress-text').innerText = `PERGUNTA ${current + 1} DE ${questions.length}`;
+        document.getElementById('question-text').innerText = q.q;
+        const container = document.getElementById('options-container');
+        container.innerHTML = "";
+        
+        q.o.forEach((opt, i) => {
+            const div = document.createElement('div');
+            div.className = 'option';
+            div.innerText = opt;
+            div.onclick = () => {
+                if(i === q.a) score++;
+                current++;
+                if(current < questions.length) showQuestion();
+                else sendResults();
+            };
+            container.appendChild(div);
+        });
+    }
+
+    async function sendResults() {
+        document.getElementById('question-screen').classList.add('hidden');
+        document.getElementById('result-screen').classList.remove('hidden');
+        document.getElementById('score-text').innerText = `${studentName}, você acertou ${score} de ${questions.length}!`;
+        document.getElementById('loader').classList.remove('hidden');
+
+        // Envio para o Formspree
+        try {
+            const response = await fetch(FORMSPREE_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    aluno: studentName,
+                    acertos: score,
+                    total: questions.length,
+                    data: new Date().toLocaleString()
+                })
+            });
+
+            if (response.ok) {
+                document.getElementById('status-msg').innerText = "✅ Resultados enviados com sucesso!";
+            } else {
+                throw new Error();
+            }
+        } catch (err) {
+            document.getElementById('status-msg').innerText = "❌ Erro ao enviar. Avise o professor!";
+        } finally {
+            document.getElementById('loader').classList.add('hidden');
+        }
+    }
+</script>
+</body>
+</html>
