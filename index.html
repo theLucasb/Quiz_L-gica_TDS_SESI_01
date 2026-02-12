@@ -70,7 +70,7 @@
         }
         .option:hover { border-color: var(--accent); background: #30363d; }
         .progress { color: #8b949e; text-align: center; font-size: 0.9rem; margin-bottom: 15px; }
-        #status-msg { margin-top: 15px; font-weight: bold; }
+        #status-msg { margin-top: 15px; font-weight: bold; text-align: center; }
     </style>
 </head>
 <body>
@@ -92,8 +92,8 @@
     <div id="result-screen" class="hidden">
         <h2 id="final-title">Relatório Final</h2>
         <p id="score-text" style="font-size: 1.2rem; text-align: center;"></p>
-        <p id="status-msg" style="text-align: center;">Enviando logs para o servidor do professor...</p>
-        <button onclick="location.reload()" style="background:#30363d;">RECOMEÇAR SPRINT</button>
+        <p id="status-msg">Enviando logs para o servidor do professor...</p>
+        <button onclick="location.reload()" style="background:#30363d; margin-top: 10px;">RECOMEÇAR SPRINT</button>
     </div>
 </div>
 
@@ -108,7 +108,7 @@
         { q: "Pseudocódigo é o quê?", o: ["Uma linguagem que só o PC entende", "Uma forma de escrever a lógica em 'português' antes de codar", "Um vírus disfarçado", "O código final em Java"], a: 1 },
         { q: "Se A=F e B=V, qual o valor de (NOT A) AND B?", o: ["Verdadeiro", "Falso", "Erro de sistema", "Depende do processador"], a: 0 },
         { q: "Frontend vs Backend. Onde fica a interface que o usuário vê?", o: ["No Backend", "No Frontend", "No Banco de Dados", "No cabo de rede"], a: 1 },
-        { q: "Qual a regra de ouro do seu guia?", o: ["Digitar rápido é o que importa", "Programar é pensar, não digitar", "Código sem comentário é melhor", "Planejar é perda de tempo"], a: 1 },
+        { q: "Qual a regra de ouro do planejamento?", o: ["Digitar rápido é o que importa", "Programar é pensar, não digitar", "Código sem comentário é melhor", "Planejar é perda de tempo"], a: 1 },
         { q: "No fluxograma, o que o 'Retângulo' representa?", o: ["O início do programa", "Uma tomada de decisão", "Um processo ou ação", "O fim do programa"], a: 2 },
         { q: "Inverter um valor Falso com o operador NOT resulta em?", o: ["Continua Falso", "Vira Nulo", "Vira Verdadeiro", "Dá tela azul"], a: 2 }
     ];
@@ -159,12 +159,12 @@
                 body: JSON.stringify({
                     aluno: studentName,
                     score: `${score}/${questions.length}`,
-                    feedback: score >= 7 ? "Hacker" : "Estagiário"
+                    performance: score >= 7 ? "Hacker" : "Estagiário"
                 })
             });
-            document.getElementById('status-msg').innerText = "✅ Logs enviados! Pode fechar a aba.";
+            document.getElementById('status-msg').innerText = "✅ Logs enviados com sucesso!";
         } catch (err) {
-            document.getElementById('status-msg').innerText = "❌ Erro de conexão com o servidor do prof!";
+            document.getElementById('status-msg').innerText = "❌ Erro ao enviar os dados!";
         }
     }
 </script>
